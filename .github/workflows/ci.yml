@@ -1,0 +1,30 @@
+name: 构建检查
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - name: 校验产物是单个 HTML 文件
+        run: |
+          test -f dist/index.html || { echo "缺少 dist/index.html"; exit 1; }
+          if grep -qE 'src="/assets|href="/assets' dist/index.html; then
+            echo "构建产物仍引用外部文件，不是单文件"; exit 1
+          fi
+          ls -lh dist/index.html
+          echo "单文件校验通过"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: talent-nine-grid-html
+          path: dist/index.html

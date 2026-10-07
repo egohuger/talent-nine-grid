@@ -1,0 +1,7 @@
+blank_issues_enabled: true
+contact_links:
+  - name: 📧 邮件反馈
+    url: mailto:egohug@126.com?subject=%5B%E4%B9%9D%E5%AE%AB%E6%A0%BC%E5%8F%8D%E9%A6%88%5D
+    about: 不想用 GitHub？直接发邮件给作者
+  - name: 💬 微信交流
+    about: 添加微信 egohughu，直接沟通使用问题

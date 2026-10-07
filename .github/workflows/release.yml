@@ -1,0 +1,31 @@
+name: 发布单文件版本
+
+# 打 tag（如 v1.0.0）时自动构建单文件 HTML 并挂到 Releases
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - name: 重命名为对外发布名
+        run: cp dist/index.html talent-nine-grid.html
+      - name: 创建 Release 并上传单文件
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release create "${GITHUB_REF_NAME}" talent-nine-grid.html \
+            --title "人才九宫格生成器 ${GITHUB_REF_NAME}" \
+            --generate-notes
